@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Portal</title>
+  <link rel="stylesheet" href="stud-profile.css" />
+  <link rel="stylesheet" href="navbar.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar solid">
+    <a href="index.html" class="logo">
+      <img src="CR.png" alt="CampusResolve" class="logo-img"> <span>CampusResolve</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="complaint.html">Raise a complaint</a>
+      <a href="dept1.html">Departments</a>
+      <span id="auth-section">
+        <a href="role.html" class="login-btn">Login</a>
+        <a href="signup2.html" class="sign_up-btn">Sign Up</a>
+      </span>
+      <span id="profile-section">
+        <a href="stud-profile.html" id="profile-link">
+          <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="nav-profile-icon" class="profile-icon"
+            alt="Profile">
+        </a>
+      </span>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- PROFILE CARD -->
+    <section class="profile-card">
+      <div class="profile-photo-wrapper">
+        <!-- Hidden file input -->
+        <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+        <!-- Clickable photo circle -->
+        <div class="profile-photo" id="profilePhotoDiv" onclick="document.getElementById('avatarInput').click()"
+          title="Click to change photo">
+          <img id="profilePhotoImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile Photo"
+            class="photo-img">
+          <!-- Upload overlay shown on hover -->
+          <div class="photo-overlay">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span class="overlay-text">Change</span>
+          </div>
+        </div>
+        <!-- Upload status -->
+        <div class="upload-status" id="uploadStatus"></div>
+      </div>
+      <div class="profile-info">
+        <h1 class="profile-name">Rohan Ali</h1>
+        <div class="profile-meta">
+          <span class="meta-tag">Scholar ID</span>
+          <span class="meta-value">UG_25_CSE_0042</span>
+        </div>
+        <div class="profile-meta">
+          <span class="meta-tag">Email</span>
+          <span class="meta-value">rohan_ug_25@cse.nits.ac.in</span>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn-logout" onclick="logout()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+          </svg>
+          Log Out
+        </button>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section class="dashboard">
+      <div class="dashboard-header">
+        <h2 class="dashboard-title">Dashboard</h2>
+        <span class="dashboard-subtitle">Complaint Summary</span>
+      </div>
+      <div class="stats-grid">
+
+        <!-- Total Submitted -->
+        <div class="stat-card stat-submitted">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div class="stat-text">
+            <span class="stat-label">Total Submitted</span>
+            <span class="stat-count stat-loading" id="countSubmitted">—</span>
+          </div>
+          <div class="stat-bar">
+            <div class="stat-fill" id="fillSubmitted" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Resolved -->
+        <div class="stat-card stat-resolved">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+            </svg>
+          </div>
+          <div class="stat-text">
+            <span class="stat-label">Resolved</span>
+            <span class="stat-count stat-loading" id="countResolved">—</span>
+          </div>
+          <div class="stat-bar">
+            <div class="stat-fill" id="fillResolved" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Open Complaints — count only, NO button inside -->
+        <div class="stat-card stat-open">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="stat-text">
+            <span class="stat-label">Open Complaints</span>
+            <span class="stat-count stat-loading" id="countPending">—</span>
+          </div>
+          <div class="stat-bar">
+            <div class="stat-fill" id="fillPending" style="width:0%"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Standalone buttons BELOW the stat cards -->
+      <div class="open-complaints-action">
+        <button class="stat-link stat-link--secondary" id="toggleAllSubmittedBtn" onclick="toggleAllSubmitted()">
+          View all submitted
+          <svg id="allSubmittedArrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" style="transition:transform 0.3s;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </button>
+        <button class="stat-link" id="togglePendingBtn" onclick="togglePendingList()">
+          View open complaints
+          <svg id="arrowIcon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" style="transition:transform 0.3s;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ALL SUBMITTED PANEL (status: open — freshly filed, not yet actioned) -->
+    <section class="pending-panel" id="allSubmittedPanel">
+      <div class="pending-header pending-header--registered">
+        <div class="pending-header-left">
+          <span class="pending-dot"></span>
+          <h3 class="pending-title">All Submitted Complaints</h3>
+        </div>
+        <button class="pending-close" onclick="toggleAllSubmitted()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="pending-table-wrap">
+        <table class="pending-table">
+          <thead>
+            <tr>
+              <th>Complaint ID</th>
+              <th>Problem Title</th>
+              <th>Submitted On</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="allSubmittedBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- OPEN COMPLAINTS PANEL (status: in_progress — admin is actively working on it) -->
+    <section class="pending-panel" id="pendingPanel">
+      <div class="pending-header">
+        <div class="pending-header-left">
+          <span class="pending-dot"></span>
+          <h3 class="pending-title">Open Complaints</h3>
+          <span class="pending-badge" id="pendingBadge">—</span>
+        </div>
+        <button class="pending-close" onclick="togglePendingList()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="pending-table-wrap">
+        <table class="pending-table">
+          <thead>
+            <tr>
+              <th>Complaint ID</th>
+              <th>Problem Title</th>
+              <th>Submitted On</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="pendingTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-left">
+        <h2>CampusResolve</h2>
+        <div class="footer-info">
+          <img src="NITS.svg" class="footer-logo" alt="logo">
+          <div class="footer-text">
+            <p>National Institute of Technology Silchar,</p>
+            <p>Cachar, Assam, India</p>
+            <p>Tel : +91 3842-224-797</p>
+            <p>Email: director@nits.ac.in</p>
+          </div>
+          <div class="footer-right">
+            <h3>For queries, contact</h3>
+            <p>+91 7896637401</p>
+            <p>+91 7099683180</p>
+            <p>+91 7010976847</p>
+            <p>+91 9004230955</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="line"></div>
+    <div class="footer-bottom">
+      <p>© 2026 CampusResolve</p>
+      <p>All rights reserved | Designed & Developed by WebWizards</p>
+    </div>
+    <div class="spacing"></div>
+  </footer>
+
+  <script src="navbar.js"></script>
+  <script src="stud-profile.js"></script>
+</body>
+
+</html>

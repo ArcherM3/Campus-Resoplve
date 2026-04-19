@@ -1,0 +1,151 @@
+/* ── Shared theme variables ── */
+:root {
+    --black: #292421;
+    --copper: #A75F37;
+    --tan: #D9B99F;
+    --blush: #F2D6CE;
+    --vanilla: #F2E7DD;
+    --green: #7A958F;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+}
+
+/* Standardized Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    width: 100%;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    font-family: var(--font-body);
+}
+
+/* Background for different pages */
+.navbar.solid {
+    background-color: var(--black);
+    position: sticky;
+    top: 0;
+    box-shadow: 0 2px 10px rgba(41, 36, 33, 0.3);
+}
+
+.navbar.transparent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+    color: white;
+}
+
+.navbar .logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--vanilla);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.navbar .logo-img {
+    height: 90px;
+    width: 90px;
+    object-fit: contain;
+}
+
+.navbar .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.navbar .nav-links a {
+    text-decoration: none;
+    color: var(--tan);
+    font-size: 15px;
+    font-weight: 400;
+    transition: 0.25s;
+}
+
+.navbar .nav-links a:hover,
+.navbar .nav-links a.active {
+    color: var(--vanilla);
+}
+
+.navbar .nav-links a.active {
+    background: var(--copper);
+    padding: 8px 18px;
+    border-radius: 6px;
+}
+
+.navbar .login-btn {
+    background: transparent;
+    border: 1.5px solid rgba(242, 231, 221, 0.35);
+    padding: 8px 20px;
+    border-radius: 6px;
+    color: var(--vanilla) !important;
+    font-weight: 500;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.navbar .login-btn:hover {
+    background: rgba(242, 231, 221, 0.1);
+    border-color: rgba(242, 231, 221, 0.6);
+}
+
+.navbar .sign_up-btn {
+    background: var(--vanilla);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    color: var(--black) !important;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.navbar .sign_up-btn:hover {
+    background: var(--blush);
+}
+
+.navbar .profile-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--copper);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    background-color: var(--vanilla);
+}
+
+.navbar .profile-icon:hover {
+    transform: scale(1.1);
+    border-color: var(--tan);
+}
+
+#auth-section {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+#profile-section {
+    display: none;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+    }
+
+    .nav-links {
+        gap: 15px;
+    }
+
+    .nav-links a {
+        font-size: 13px;
+    }
+}

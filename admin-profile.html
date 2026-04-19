@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile - Dashboard</title>
+    <link rel="stylesheet" href="admin-profile.css">
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar solid">
+        <a href="index.html" class="logo">
+            <img src="CR.png" alt="CampusResolve" class="logo-img"> <span>CampusResolve</span>
+        </a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="complaint.html">Raise a complaint</a>
+            <a href="dept1.html">Departments</a>
+            <span id="auth-section">
+                <a href="role.html" class="login-btn">Login</a>
+                <a href="signup2.html" class="sign_up-btn">Sign Up</a>
+            </span>
+            <span id="profile-section">
+                <a href="admin-profile.html" id="profile-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="nav-profile-icon"
+                        class="profile-icon" alt="Profile">
+                </a>
+            </span>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <!-- ADMIN PROFILE CARD -->
+        <div class="profile-header">
+            <div class="profile-photo-wrapper">
+                <!-- Hidden file input -->
+                <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+                <!-- Clickable photo circle -->
+                <div class="profile-photo-container" id="profilePhotoDiv"
+                    onclick="document.getElementById('avatarInput').click()" title="Click to change photo">
+                    <img id="profilePhotoImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                        alt="Admin Profile Photo" class="profile-photo">
+                    <!-- Upload overlay shown on hover -->
+                    <div class="photo-overlay">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="overlay-text">Change</span>
+                    </div>
+                </div>
+                <!-- Upload status -->
+                <div class="upload-status" id="uploadStatus"></div>
+            </div>
+            <div class="profile-info">
+                <h1 class="admin-name">Sarah Mitchell</h1>
+                <div class="admin-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Position</span>
+                        <span class="detail-value">Senior Administrator</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Department</span>
+                        <span class="detail-value">Operations Management</span>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="logout-btn" onclick="logout()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+                    </svg>
+                    Log Out
+                </button>
+            </div>
+        </div>
+
+        <!-- METRICS DASHBOARD -->
+        <div class="metrics-dashboard">
+            <div class="metrics-header">
+                <h2 class="metrics-title">Dashboard</h2>
+                <span class="metrics-subtitle">Complaint Summary</span>
+            </div>
+
+            <div class="metrics-grid">
+
+                <!-- Total Registered -->
+                <div class="metric-card metric-total">
+                    <div class="metric-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div class="metric-text">
+                        <span class="metric-label">Total Registered</span>
+                        <span class="metric-value metric-loading" id="totalCount">—</span>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-fill" id="fillTotal" style="width:100%"></div>
+                    </div>
+                </div>
+
+                <!-- Resolved -->
+                <div class="metric-card metric-resolved">
+                    <div class="metric-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                    </div>
+                    <div class="metric-text">
+                        <span class="metric-label">Resolved</span>
+                        <span class="metric-value metric-loading" id="resolvedCount">—</span>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-fill" id="fillResolved" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <!-- Open Complaints — count only, NO button inside -->
+                <div class="metric-card metric-open">
+                    <div class="metric-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="metric-text">
+                        <span class="metric-label">Open Complaints</span>
+                        <span class="metric-value metric-loading" id="pendingCount">—</span>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-fill" id="fillOpen" style="width:0%"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Standalone buttons BELOW metric cards -->
+            <div class="dashboard-actions">
+                <button class="view-details-btn view-details-btn--secondary" id="allRegisteredCard">
+                    View all registered
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" style="transition:transform 0.3s;" id="allArrow">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </button>
+                <button class="view-details-btn" id="pendingCard">
+                    View open complaints
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" style="transition:transform 0.3s;" id="adminArrow">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ALL REGISTERED COMPLAINTS TABLE (status: open) -->
+        <div class="table-wrapper hidden" id="allRegisteredWrapper">
+            <div class="table-header table-header--registered">
+                <h2>All Registered Complaints</h2>
+                <button class="close-btn" id="closeAllBtn">✕</button>
+            </div>
+            <div class="search-box">
+                <div class="search-bar-wrapper">
+                    <input type="text" id="searchAllInput" placeholder="Search by Complaint ID..."
+                        onkeyup="filterTable('allRegisteredBody', 'searchAllInput')">
+                </div>
+                <table class="complaints-table">
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Problem Description</th>
+                            <th>Registered Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allRegisteredBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- OPEN / IN-PROGRESS COMPLAINTS TABLE (status: in_progress) -->
+        <div class="table-wrapper hidden" id="tableWrapper">
+            <div class="table-header">
+                <h2>Open Complaints <span class="in-progress-badge">In Progress</span></h2>
+                <button class="close-btn" id="closeBtn">✕</button>
+            </div>
+            <div class="search-box">
+                <div class="search-bar-wrapper">
+                    <input type="text" id="searchInput" placeholder="Search by Complaint ID..."
+                        onkeyup="filterTable('complaintsBody', 'searchInput')">
+                </div>
+                <table class="complaints-table">
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Problem Description</th>
+                            <th>Registered Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="complaintsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-left">
+                <h2>CampusResolve</h2>
+                <div class="footer-info">
+                    <img src="NITS.svg" class="footer-logo" alt="logo">
+                    <div class="footer-text">
+                        <p>National Institute of Technology Silchar,</p>
+                        <p>Cachar, Assam, India</p>
+                        <p>Tel : +91 3842-224-797</p>
+                        <p>Email: director@nits.ac.in</p>
+                    </div>
+                    <div class="footer-right">
+                        <h3>For queries, contact</h3>
+                        <p>+91 7896637401</p>
+                        <p>+91 7099683180</p>
+                        <p>+91 7010976847</p>
+                        <p>+91 9004230955</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="footer-bottom">
+            <p>© 2026 CampusResolve</p>
+            <p>All rights reserved | Designed & Developed by WebWizards</p>
+        </div>
+        <div class="spacing"></div>
+    </footer>
+
+    <script src="navbar.js"></script>
+    <script src="admin-profile.js"></script>
+</body>
+
+</html>

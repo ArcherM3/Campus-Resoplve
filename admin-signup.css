@@ -1,0 +1,117 @@
+:root {
+  --black:   #292421;
+  --copper:  #A75F37;
+  --tan:     #D9B99F;
+  --blush:   #F2D6CE;
+  --vanilla: #F2E7DD;
+  --green:   #7A958F;
+  --font-display: 'Playfair Display', Georgia, serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; font-family: 'DM Sans', sans-serif; }
+
+body {
+  margin: 0;
+  background: var(--vanilla);
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+}
+
+.hidden { display: none !important; }
+.profile-icon { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid var(--copper); vertical-align: middle; }
+
+/* Page content wrapper */
+.page-content {
+  width: 100%; display: flex;
+  justify-content: center; align-items: flex-start;
+  padding: 100px 20px 60px;
+}
+
+/* ── Card ── */
+.container {
+  background: var(--black);
+  padding: 40px 36px;
+  width: 440px;
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(41,36,33,0.25);
+  border: 1px solid rgba(217,185,159,0.12);
+}
+
+h2 {
+  font-family: var(--font-display);
+  margin-bottom: 24px;
+  color: var(--vanilla);
+  font-size: 24px; font-weight: 700;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-top: 16px; margin-bottom: 6px;
+  color: var(--tan);
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+input, select {
+  width: 100%; padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(217,185,159,0.2);
+  outline: none;
+  background: rgba(242,231,221,0.07);
+  color: var(--vanilla);
+  font-size: 14px; box-sizing: border-box;
+  transition: 0.2s;
+}
+
+input:focus, select:focus {
+  border-color: var(--copper);
+  box-shadow: 0 0 0 3px rgba(167,95,55,0.12);
+}
+
+select {
+  cursor: pointer; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23D9B99F'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px; padding-right: 40px;
+}
+
+select option { background: var(--black); color: var(--vanilla); }
+
+button[type="submit"] {
+  margin-top: 24px; width: 100%; padding: 12px;
+  background: var(--copper); color: var(--vanilla);
+  border: none; border-radius: 8px;
+  cursor: pointer; font-size: 15px; font-weight: 600;
+  transition: 0.2s;
+}
+
+button[type="submit"]:hover { background: #8f4f2b; transform: translateY(-1px); }
+
+#message { margin-top: 14px; font-weight: 600; font-size: 14px; }
+
+/* ── Photo upload ── */
+.photo-upload { display: flex; margin-top: 18px; gap: 8px; }
+
+.photo-btn {
+  flex-grow: 1;
+  background: rgba(242,231,221,0.07); color: var(--tan);
+  border: 1px solid rgba(217,185,159,0.2);
+  padding: 10px; border-radius: 8px;
+  cursor: pointer; font-size: 14px; transition: 0.2s;
+}
+
+.plus-btn {
+  width: 44px;
+  background: rgba(242,231,221,0.07); color: var(--tan);
+  border: 1px solid rgba(217,185,159,0.2);
+  padding: 10px; border-radius: 8px;
+  cursor: pointer; font-size: 20px; transition: 0.2s;
+}
+
+.photo-btn:hover, .plus-btn:hover {
+  background: rgba(167,95,55,0.12);
+  border-color: var(--copper); color: var(--vanilla);
+}
