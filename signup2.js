@@ -42,8 +42,8 @@ signUpBtn.addEventListener("click", (e) => {
 
     // Constraints
     const nameRegex = /^[A-Za-z ]+$/;
-    const emailRegex = /.+@nits\.ac\.in$/;
     const phoneRegex = /^\d{10}$/;
+    const emailRegex = /^.+@(cse|ee|ece|me|ce|ei)\.nits\.ac\.in$/;
 
     if (!nameValue || !emailValue || !passValue || !scholarValue || !phoneValue) {
         alert("Please fill in all fields.");
@@ -56,7 +56,7 @@ signUpBtn.addEventListener("click", (e) => {
     }
 
     if (!emailRegex.test(emailValue)) {
-        alert("Email must end with @nits.ac.in");
+        alert("Invalid email format. Must end with @<dept>.nits.ac.in (dept: cse, ee, ece, me, ce, ei).");
         return;
     }
 
@@ -76,27 +76,25 @@ signUpBtn.addEventListener("click", (e) => {
     formData.append("college_email", emailValue);
     formData.append("password", passValue);
     formData.append("sch_id", scholarValue);
-    // Removing phone_number from payload as it's not in the backend schema
-    // formData.append("phone_number", phoneValue); 
-    formData.append("avatar", file); 
+    formData.append("avatar", file);
 
     // 4. Send to Server
     fetch("https://web-wizards-backend.onrender.com/auth/signup/student", {
         method: "POST",
         body: formData
     })
-    .then(async response => {
-        const data = await response.json();
-        if (response.ok) {
-            alert("Signup successful! Please login.");
-            window.location.href = "login.html"; 
-        } else {
-            console.error("Signup failed:", data);
-            alert("Signup failed: " + (data.detail?.[0]?.msg || data.detail || "Username might be already taken or invalid data."));
-        }
-    })
-    .catch(error => {
-        console.error("Fetch Error:", error);
-        alert("Server error.");
-    });
+        .then(async response => {
+            const data = await response.json();
+            if (response.ok) {
+                alert("Signup successful! Please login.");
+                window.location.href = "login.html";
+            } else {
+                console.error("Signup failed:", data);
+                alert("Signup failed: " + (data.detail?.[0]?.msg || data.detail || "Username might be already taken or invalid data."));
+            }
+        })
+        .catch(error => {
+            console.error("Fetch Error:", error);
+            alert("Server error.");
+        });
 });

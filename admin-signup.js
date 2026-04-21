@@ -61,14 +61,13 @@ document.getElementById("adminForm").addEventListener("submit", async function (
         formData.append("username", username);
         formData.append("email", email);
         formData.append("password", password);
-        formData.append("id", admin_id); 
+        formData.append("id", admin_id);
         formData.append("department", department);
-        // Removed phone_number from payload as it's not in the backend schema
-        formData.append("avatar", avatarFile); 
+        formData.append("avatar", avatarFile);
 
         let response = await fetch("https://web-wizards-backend.onrender.com/auth/signup/admin", {
             method: "POST",
-            body: formData 
+            body: formData
         });
 
         let data = await response.json();
@@ -83,8 +82,8 @@ document.getElementById("adminForm").addEventListener("submit", async function (
         } else {
             console.error("Signup failed:", data);
             message.style.color = "red";
-            const errMsg = (data.detail && Array.isArray(data.detail)) 
-                ? data.detail.map(err => err.msg).join(", ") 
+            const errMsg = (data.detail && Array.isArray(data.detail))
+                ? data.detail.map(err => err.msg).join(", ")
                 : (data.detail || data.message || "Signup failed (Username might be taken)");
             message.innerText = errMsg;
         }

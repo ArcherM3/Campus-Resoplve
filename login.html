@@ -68,18 +68,17 @@
 
     // Get role from URL query param, default to detection if missing
     const urlParams = new URLSearchParams(window.location.search);
-    const role = urlParams.get('role') || (email.endsWith("@nits.ac.in") ? "student" : "admin");
+    const isStudentEmail = /^.+@(cse|ee|ece|me|ce|ei)\.nits\.ac\.in$/.test(email) || email.endsWith("@nits.ac.in");
+    const role = urlParams.get('role') || (isStudentEmail ? "student" : "admin");
 
     const endpoint = role === "student" 
       ? "https://web-wizards-backend.onrender.com/auth/login/student" 
       : "https://web-wizards-backend.onrender.com/auth/login/admin";
 
     try {
-      const payload = {
-        username: username,
-        college_email: email,
-        password: password
-      };
+      const payload = role === "admin" 
+        ? { username: username, email: email, password: password }
+        : { username: username, college_email: email, password: password };
 
       const response = await fetch(endpoint, {
         method: "POST",

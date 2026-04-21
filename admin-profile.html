@@ -225,9 +225,31 @@
                 </table>
             </div>
         </div>
+        <div id="closeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">Resolution Details</div>
+                <form id="closeForm">
+                    <div class="modal-body">
+                        <p style="font-size: 13px; color: var(--tan); opacity: 0.8;">
+                            Closing this complaint will notify the student. Please provide the final resolution.
+                        </p>
+
+                        <label for="closingDescription">Resolution Description *</label>
+                        <textarea id="closingDescription" placeholder="Explain how the issue was resolved..."
+                            required></textarea>
+
+                        <label for="closingDocument">Attachment (Proof of Resolution) *</label>
+                        <input type="file" id="closingDocument" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" onclick="hideCloseModal()">Cancel</button>
+                        <button type="submit" class="btn-confirm">Close Complaint</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
     </div>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-top">

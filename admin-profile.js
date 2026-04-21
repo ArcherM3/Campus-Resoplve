@@ -86,28 +86,36 @@ const adminArrow = document.getElementById('adminArrow');
 const allArrow = document.getElementById('allArrow');
 
 // ─── Toggle: "View open complaints" (in_progress table) ──────────────────────
-pendingCard.addEventListener('click', function () {
-  const isHidden = tableWrapper.classList.toggle('hidden');
-  adminArrow.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(90deg)';
-});
+if (pendingCard) {
+  pendingCard.addEventListener('click', function () {
+    const isHidden = tableWrapper.classList.toggle('hidden');
+    adminArrow.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(90deg)';
+  });
+}
 
-closeBtn.addEventListener('click', function (e) {
-  e.stopPropagation();
-  tableWrapper.classList.add('hidden');
-  adminArrow.style.transform = 'rotate(0deg)';
-});
+if (closeBtn) {
+  closeBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    tableWrapper.classList.add('hidden');
+    adminArrow.style.transform = 'rotate(0deg)';
+  });
+}
 
 // ─── Toggle: "View all registered" (open status table) ───────────────────────
-allRegisteredCard.addEventListener('click', function () {
-  const isHidden = allRegisteredWrapper.classList.toggle('hidden');
-  allArrow.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(90deg)';
-});
+if (allRegisteredCard) {
+  allRegisteredCard.addEventListener('click', function () {
+    const isHidden = allRegisteredWrapper.classList.toggle('hidden');
+    allArrow.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(90deg)';
+  });
+}
 
-closeAllBtn.addEventListener('click', function (e) {
-  e.stopPropagation();
-  allRegisteredWrapper.classList.add('hidden');
-  allArrow.style.transform = 'rotate(0deg)';
-});
+if (closeAllBtn) {
+  closeAllBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    allRegisteredWrapper.classList.add('hidden');
+    allArrow.style.transform = 'rotate(0deg)';
+  });
+}
 
 // ─── Filter rows by complaint ID ─────────────────────────────────────────────
 function filterTable(tbodyId, inputId) {
@@ -118,7 +126,6 @@ function filterTable(tbodyId, inputId) {
   });
 }
 
-// Keep old name as alias so any inline onkeyup="filterComplaints()" still works
 function filterComplaints() { filterTable('complaintsBody', 'searchInput'); }
 
 // ─── Status dropdown colour update ───────────────────────────────────────────
@@ -126,7 +133,7 @@ function updateStatus(select) {
   const colors = {
     'open': '#E8834A',
     'in_progress': '#A75F37',
-    'resolved': '#7A958F'
+    'closed': '#7A958F'
   };
   select.style.borderColor = colors[select.value] || 'rgba(217,185,159,0.15)';
   select.style.color = colors[select.value] || 'rgba(217,185,159,0.8)';
@@ -147,7 +154,7 @@ function buildRow(complaint) {
     '<select class="status-select status-drop" onchange="updateComplaintStatus(\'' + cId + '\', this.value, this)">' +
     '<option value="open"        ' + (complaint.status === 'open' ? 'selected' : '') + '>Open</option>' +
     '<option value="in_progress" ' + (complaint.status === 'in_progress' ? 'selected' : '') + '>In Progress</option>' +
-    '<option value="resolved"    ' + (complaint.status === 'resolved' ? 'selected' : '') + '>Resolved</option>' +
+    '<option value="closed"      ' + (complaint.status === 'closed' ? 'selected' : '') + '>Closed</option>' +
     '</select>' +
     '</td>';
   return row;
@@ -167,21 +174,20 @@ async function loadDepartmentStats(department) {
       { headers: { "Authorization": 'Bearer ' + token } }
     );
     const data = await res.json();
-    console.log("Admin department stats received:", data);
 
-    const total = data.total_complaints ?? data.total ?? 0;
-    const resolved = data.resolved ?? 0;
-    const open = data.open ?? data.pending ?? (total - resolved);
+    const total = data.total ?? 0;
+    const closed = data.closed ?? 0;
+    const open = data.open ?? 0;
 
     document.getElementById('totalCount').textContent = total;
-    document.getElementById('resolvedCount').textContent = resolved;
+    document.getElementById('resolvedCount').textContent = closed; // Show closed as resolved
     document.getElementById('pendingCount').textContent = open;
 
     document.querySelectorAll('.metric-loading').forEach(el => el.classList.remove('metric-loading'));
 
     const base = total || 1;
     document.getElementById('fillTotal').style.width = '100%';
-    document.getElementById('fillResolved').style.width = Math.round((resolved / base) * 100) + '%';
+    document.getElementById('fillResolved').style.width = Math.round((closed / base) * 100) + '%';
     document.getElementById('fillOpen').style.width = Math.round((open / base) * 100) + '%';
 
   } catch (err) {
@@ -190,11 +196,6 @@ async function loadDepartmentStats(department) {
 }
 
 // ─── Load & split complaints into two tables ──────────────────────────────────
-//
-//   "All Registered" table  → status === 'open'        (freshly filed, not yet actioned)
-//   "Open Complaints" table → status === 'in_progress'  (admin is actively working on it)
-//   'resolved' complaints   → hidden from both tables
-//
 async function loadComplaints(department) {
   try {
     const token = localStorage.getItem("token");
@@ -220,8 +221,9 @@ async function loadComplaints(department) {
 
     data.forEach(complaint => {
       const status = (complaint.status || 'open').toLowerCase();
-      const row = buildRow(complaint);
+      if (status === 'closed') return; // Hide closed from active tables
 
+      const row = buildRow(complaint);
       if (status === 'open') {
         allBody.appendChild(row);
         allCount++;
@@ -229,7 +231,6 @@ async function loadComplaints(department) {
         openBody.appendChild(row);
         openCount++;
       }
-      // resolved → omit from both tables
     });
 
     if (allCount === 0) allBody.innerHTML = emptyRow('No registered complaints found.');
@@ -242,8 +243,69 @@ async function loadComplaints(department) {
   }
 }
 
-// ─── Update status + live-migrate row between tables ─────────────────────────
+// ─── Modal Management ────────────────────────────────────────────────────────
+let pendingCloseId = null;
+let pendingSelectEl = null;
+
+function showCloseModal(complaintId, selectEl) {
+  pendingCloseId = complaintId;
+  pendingSelectEl = selectEl;
+  document.getElementById('closeModal').style.display = 'block';
+}
+
+function hideCloseModal() {
+  document.getElementById('closeModal').style.display = 'none';
+  if (pendingSelectEl) {
+    pendingSelectEl.value = "in_progress"; // Revert if cancelled
+    updateStatus(pendingSelectEl);
+  }
+  document.getElementById('closeForm').reset();
+}
+
+async function handleCloseSubmit(e) {
+  e.preventDefault();
+  const description = document.getElementById('closingDescription').value;
+  const file = document.getElementById('closingDocument').files[0];
+  const token = localStorage.getItem("token");
+
+  const formData = new FormData();
+  formData.append("closing_description", description);
+  formData.append("document", file);
+
+  try {
+    const url = `https://web-wizards-backend.onrender.com/complaints/complaint/${pendingCloseId}/close`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { "Authorization": 'Bearer ' + token },
+      body: formData
+    });
+
+    if (res.ok) {
+      alert("Complaint closed successfully.");
+      document.getElementById('closeModal').style.display = 'none';
+      const row = pendingSelectEl.closest('tr');
+      row.remove();
+
+      const dept = document.querySelectorAll('.detail-value')[1].textContent.trim();
+      loadDepartmentStats(dept);
+      _checkEmpty(document.getElementById('allRegisteredBody'), 'No registered complaints found.');
+      _checkEmpty(document.getElementById('complaintsBody'), 'No open complaints found.');
+    } else {
+      const err = await res.json();
+      alert("Failed to close: " + (err.detail || "Server error"));
+    }
+  } catch (err) {
+    console.error("Close error:", err);
+  }
+}
+
+// ─── Update status ───────────────────────────────────────────────────────────
 async function updateComplaintStatus(complaintId, newStatus, selectEl) {
+  if (newStatus === 'closed') {
+    showCloseModal(complaintId, selectEl);
+    return;
+  }
+
   const token = localStorage.getItem("token");
   try {
     const url = 'https://web-wizards-backend.onrender.com/complaints/complaint/' + complaintId + '/status?status_data=' + encodeURIComponent(newStatus);
@@ -254,47 +316,30 @@ async function updateComplaintStatus(complaintId, newStatus, selectEl) {
 
     if (res.ok) {
       updateStatus(selectEl);
-
       const row = selectEl.closest('tr');
       const allBody = document.getElementById('allRegisteredBody');
       const openBody = document.getElementById('complaintsBody');
 
       if (newStatus === 'in_progress') {
-        // open → in_progress: move row to "Open Complaints" table
         openBody.appendChild(row);
         _checkEmpty(allBody, 'No registered complaints found.');
         _clearEmpty(openBody);
       } else if (newStatus === 'open') {
-        // in_progress → open: move row back to "All Registered" table
         allBody.appendChild(row);
         _checkEmpty(openBody, 'No open complaints found.');
         _clearEmpty(allBody);
-      } else if (newStatus === 'resolved') {
-        // resolved: remove from whichever table it's in
-        row.remove();
-        _checkEmpty(allBody, 'No registered complaints found.');
-        _checkEmpty(openBody, 'No open complaints found.');
       }
 
-      // Refresh metric counts
       const dept = document.querySelectorAll('.detail-value')[1].textContent.trim();
       loadDepartmentStats(dept);
-
-    } else {
-      const errData = await res.json();
-      alert("Failed to update status: " + (errData.detail || "Server error"));
     }
   } catch (e) {
     console.error("Status update error:", e);
-    alert("An error occurred while updating status.");
   }
 }
 
-// ─── Empty-state helpers ──────────────────────────────────────────────────────
 function _checkEmpty(tbody, msg) {
   if (tbody.querySelectorAll('tr.row').length === 0) {
-    const old = tbody.querySelector('tr:not(.row)');
-    if (old) old.remove();
     tbody.innerHTML = emptyRow(msg);
   }
 }
@@ -304,14 +349,12 @@ function _clearEmpty(tbody) {
   if (placeholder) placeholder.remove();
 }
 
-// ─── Utility ─────────────────────────────────────────────────────────────────
 function formatDate(dateStr) {
   if (!dateStr) return 'N/A';
   const d = new Date(dateStr);
   return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-// ─── Load admin profile ───────────────────────────────────────────────────────
 async function loadAdminProfile() {
   const token = localStorage.getItem("token");
   if (!token) { window.location.href = "login.html"; return; }
@@ -325,14 +368,11 @@ async function loadAdminProfile() {
       document.querySelector('.admin-name').textContent = data.username;
       document.querySelectorAll('.detail-value')[0].textContent = data.position || 'Administrator';
       document.querySelectorAll('.detail-value')[1].textContent = data.department || 'General';
-
-      // Backend returns the Cloudinary URL under `profile_pic`
       applyAvatar(resolveAvatarUrl(data.profile_pic || data.avatar));
 
       const dept = data.department || 'General';
       loadDepartmentStats(dept);
       loadComplaints(dept);
-
     } else {
       localStorage.clear();
       window.location.href = "login.html";
@@ -342,5 +382,8 @@ async function loadAdminProfile() {
   }
 }
 
-// Bootstrap
-document.addEventListener("DOMContentLoaded", loadAdminProfile);
+document.addEventListener("DOMContentLoaded", () => {
+  loadAdminProfile();
+  const closeForm = document.getElementById('closeForm');
+  if (closeForm) closeForm.addEventListener('submit', handleCloseSubmit);
+});
