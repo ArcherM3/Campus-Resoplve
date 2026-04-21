@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Campus Issue Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="complaint.css">
     <link rel="stylesheet" href="navbar.css">
 </head>
@@ -18,7 +21,7 @@
 
         <nav class="nav-links">
             <a href="index.html">Home</a>
-            <a href="complaint.html">Raise a complaint</a>
+            <a href="complaint.html" class="active">Raise a complaint</a>
             <a href="dept1.html">Departments</a>
 
             <span id="auth-section">
@@ -26,7 +29,7 @@
                 <a href="signup2.html" class="sign_up-btn">Sign Up</a>
             </span>
 
-            <span id="profile-section">
+            <span id="profile-section" style="display: none;">
                 <a href="stud-profile.html" id="profile-link">
                     <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="nav-profile-icon"
                         class="profile-icon" alt="Profile">
@@ -57,7 +60,6 @@
                     <input type="text" id="scholarId" placeholder="e.g. 25CS10072" required>
                 </div>
 
-
                 <div class="form-group">
                     <label>Phone Number <span>*</span></label>
                     <input type="text" id="phone" placeholder="Enter your phone number" pattern="\d{10}"
@@ -65,27 +67,30 @@
                 </div>
             </div>
 
-            <div class="form-group mb">
-                <label>Concerned Department <span>*</span></label>
-                <select id="department" required>
-                    <option value="">Select department</option>
-                    <option value="Academics">Academics</option>
-                    <option value="Infrastructure">Infrastructure</option>
-                    <option value="IT">IT</option>
-                    <option value="Hostel">Hostel</option>
-                    <option value="Mess">Mess</option>
-                    <option value="Security">Security</option>
-                    <option value="Library">Library</option>
-                    <option value="Transport">Transport</option>
-                    <option value="Medical">Medical</option>
-                    <option value="Administration">Administration</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group mb">
+                    <label>Concerned Department <span>*</span></label>
+                    <select id="department" required>
+                        <option value="">Select department</option>
+                        <option value="Academics">Academics</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="IT">IT</option>
+                        <option value="Hostel">Hostel</option>
+                        <option value="Mess">Mess</option>
+                        <option value="Security">Security</option>
+                        <option value="Library">Library</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Medical">Medical</option>
+                        <option value="Administration">Administration</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb">
+                    <label>Problem Title <span>*</span></label>
+                    <input type="text" id="title" placeholder="Enter a short title for the issue" required>
+                </div>
             </div>
 
-            <div class="form-group mb">
-                <label>Problem Title <span>*</span></label>
-                <input type="text" id="title" placeholder="Enter a short title for the issue" required>
-            </div>
             <div class="form-group">
                 <label>Problem Description <span>*</span></label>
                 <textarea id="description" placeholder="Describe the issue in detail..." required></textarea>
@@ -95,7 +100,13 @@
             <div class="form-group">
                 <label>Attach Files</label>
                 <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-                    <div class="upload-icon">⬆️</div>
+                    <div class="upload-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
                     <div class="upload-text">Click to upload images or documents</div>
                     <div class="upload-sub" id="fileNameDisplay">Max 1 file</div>
                     <input type="file" id="fileInput" hidden>
@@ -107,32 +118,40 @@
         </form>
     </div>
 
-    <!-- Footer -->
+    <!-- ── Footer ── -->
     <footer class="footer">
-        <div class="footer-top">
-            <div class="footer-left">
-                <h2>CampusResolve</h2>
-                <div class="footer-info">
-                    <img src="NITS.svg" class="footer-logo" alt="logo">
-                    <div class="footer-text">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="CR.png" alt="CR" class="footer-logo-img">
+                <h2 class="footer-name">CampusResolve</h2>
+            </div>
+
+            <div class="footer-body">
+                <div class="footer-info-block">
+                    <img src="NITS.svg" class="footer-nits-logo" alt="NIT Silchar">
+                    <div class="footer-address">
                         <p>National Institute of Technology Silchar,</p>
                         <p>Cachar, Assam, India</p>
-                        <p>Tel : +91 3842-224-797</p>
+                        <p>Tel: +91 3842-224-797</p>
                         <p>Email: director@nits.ac.in</p>
                     </div>
-                    <div class="footer-right">
-                        <h3>For queries, contact</h3>
-                        <p>+91 7896637401</p>
-                        <p>+91 7099683180</p>
-                        <p>+91 7010976847</p>
-                        <p>+91 9004230955</p>
-                    </div>
+                </div>
+
+                <div class="footer-contact">
+                    <h3>For queries, contact</h3>
+                    <p>+91 7896637401</p>
+                    <p>+91 7099683180</p>
+                    <p>+91 7010976847</p>
+                    <p>+91 9004230955</p>
                 </div>
             </div>
-        </div>
-        <div class="line"></div>
-        <div class="footer-bottom">
-            <p>© 2026 CampusResolve | All rights reserved | Designed & Developed by WebWizards</p>
+
+            <div class="footer-divider"></div>
+
+            <div class="footer-bottom">
+                <p>© 2026 CampusResolve</p>
+                <p>All rights reserved · Designed &amp; Developed by WebWizards</p>
+            </div>
         </div>
     </footer>
 
